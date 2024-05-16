@@ -1,0 +1,42 @@
+# Pabc Aries Module
+This project contains the changes to the ARIES framework to introduce the distributed p-ABC functionality developped in ERATOSTHENES. 
+
+## Usage
+Because of limitations of the framework and Go, it was necessary to include the complete framework code. The APIs will not be changed with respect to the official framework version that is currently, except in the select cases where ti is needed for introducing the dp-ABC logic (mostly only visible if working at low level with the framework). 
+
+Headers and packages are the same as in the framework. To use this modified version of the ARIES framework, you need to use the replace directive. Instead of manually modifying go.mod, it is preferrable to use the following commands (**Note** The repository is private, so extra steps are needed before being able to execute "go get", please check the specific section):<sup>[1](#nota1)</sup>
+```
+go mod edit -replace=github.com/hyperledger/aries-framework-go@tag=ci-cysec.eng.it/gitlab/eratosthenes/wp3/pabc-aries-module.git@tag
+go get github.com/hyperledger/aries-framework-go@tag
+```
+
+We will use tags in this repository to mark "stable" versions that introduce features or bug fixes (i.e., releases). The format will be *v\<version\>-r\<release\>*, where *version* corresponds to the respective version of the Hyperledger Aries Framework, and *release* is an increasing number (starting from 0 for each tag) that corresponds to a "release" of features/fixes within the project's modified version. Additionally, tags will be annotated with further information.
+For instance, if you were using hyperledger-aries version 0.1.9, and you can execute:
+```
+go mod edit -replace=github.com/hyperledger/aries-framework-go@v0.1.9=ci-cysec.eng.it/gitlab/eratosthenes/wp3/pabc-aries-module.git@v0.1.9-r0
+go get github.com/hyperledger/aries-framework-go@v0.1.9
+```
+To use the initial version of the modified framework, that introduces the basic features of the p-ABC cryptography (i.e., without ZK derivation).
+
+<a name="nota1">
+1. Note that the value for the repository must include ".git" for it to work, because of an issue with the Gitlab repository that returns the CY-CySec.eng.it domain with capital letters when the meta tag is requested by the dependency manager through "?go-get=1", which is not supported by Golang. 
+</a>
+
+### Working in Go with the private repository
+As the Gitlab repository is private, it is necessary to establish some extra configuration so that Go can get the code. First, it is necessary to create a [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#creating-a-personal-access-token) to authenticate with your account in the project's Gitlab. Only *read_api* and probably *read_repository* scopes are needed.
+
+1. Define the ~/.netrc file to provide the credentials to Go, e.g.: 
+```bash
+$echo "machine ci-cysec.eng.it login USERNAME password ACCESS_TOKEN" >> ~/.netrc
+```
+2. Set up the Go environment variables that declare the usage of modules and the use of *ci-cysec.eng.it* as a private repository(instead of having Go look into public ones), e.g., by adding to ~/.basrc:
+```bash
+export GO111MODULE=on
+export GOPRIVATE=ci-cysec.eng.it
+```
+
+[^1]
+
+
+## Testing
+Mocks for testing may need to change in the future (especially if APIs change). They are generated in the framework through the Makefile target "mocks" (which calls github.com/golang/mock/mockgen@v1.5.0)

@@ -1,0 +1,16 @@
+{
+  "@context": [
+    {
+      "@version": 1.1
+    },
+    "https://www.w3.org/ns/odrl.jsonld",
+    {
+      "ex": "https://ssiproject.inf.um.es/example/poc/",
+      "schema": "https://schema.org/",
+      "PocCredential": "ex:Credential",
+      "pufId": "ex:pufId",
+      "holderName": "ex:HolderName",
+      "holderRole": "ex:holderRole"
+    }
+  ]
+}
